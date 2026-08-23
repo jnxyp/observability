@@ -41,3 +41,26 @@ curl -fsS http://127.0.0.1:3000/api/health
 ```
 
 变更 Grafana provisioning 后，可重启 Grafana，或使用管理员凭据调用对应的 provisioning reload API。正式部署前应再次检查 `git status`，确认没有 secret 或运行数据进入暂存区。
+
+## 更新流程
+
+所有配置修改先在本地仓库完成并验证，然后 commit、push；服务器不直接修改仓库中的跟踪文件：
+
+```powershell
+Set-Location D:\ProjectsLocal\observability
+git status
+git add <files>
+git commit
+git push origin main
+```
+
+服务器只通过 fast-forward pull 接收版本：
+
+```bash
+ssh cn-hk-grafana
+cd /home/ubuntu/docker_projects/observability
+git pull --ff-only
+git status --short --branch
+```
+
+Pull 完成后根据变更范围执行对应的 `docker compose up -d`、服务 reload，或将仓库中的辅助配置同步到上表所列的实际路径。`.env`、`data/` 和其他本地 secret/运行数据受 `.gitignore` 保护，不由 Git 管理。
