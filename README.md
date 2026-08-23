@@ -30,6 +30,8 @@ restic/restic.env.example                 -> /home/ubuntu/.restic.env
 
 这些目标文件均应设置为 `600`，不得提交。Caddy 的 `grafana.env` 只保存 bcrypt hash；节点的 ingest password 只保存在发送端和服务器本地凭据清单。
 
+`GRAFANA_ADMIN_USER` 和 `GRAFANA_ADMIN_PASSWORD` 只在首次创建 Grafana 数据库时初始化管理员。之后在 UI/数据库中修改的密码不会因更新 `.env` 或重建容器而被覆盖；不要把 `.env` 中的 bootstrap password 当作现有账号密码的权威来源。
+
 ## 基本校验
 
 ```bash
