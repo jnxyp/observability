@@ -1,0 +1,32 @@
+// Secondary write targets used during the Grafana Cloud migration.
+// Credentials are supplied by /etc/alloy/selfhosted.env through systemd.
+prometheus.remote_write "selfhosted" {
+  endpoint {
+    url = "https://grafana.jnxyp.net/api/v1/write"
+
+    basic_auth {
+      username = sys.env("SELFHOSTED_GRAFANA_USERNAME")
+      password = sys.env("SELFHOSTED_GRAFANA_PASSWORD")
+    }
+
+    queue_config {
+      capacity             = 2500
+      max_shards           = 2
+      min_shards           = 1
+      max_samples_per_send = 1000
+    }
+  }
+}
+
+loki.write "selfhosted" {
+  endpoint {
+    url        = "https://grafana.jnxyp.net/loki/api/v1/push"
+    batch_wait = "5s"
+    batch_size = "1MiB"
+
+    basic_auth {
+      username = sys.env("SELFHOSTED_GRAFANA_USERNAME")
+      password = sys.env("SELFHOSTED_GRAFANA_PASSWORD")
+    }
+  }
+}

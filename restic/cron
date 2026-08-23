@@ -1,0 +1,4 @@
+# Restic backup for cn-hk-grafana
+# Logs: /var/log/restic/backup.log
+SHELL=/bin/bash
+0 5 * * * ubuntu bash /home/ubuntu/docker_projects/.restic/backup.sh >> /var/log/restic/backup.log 2>&1

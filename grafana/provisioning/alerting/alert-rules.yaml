@@ -1,0 +1,825 @@
+{
+  "apiVersion": 1,
+  "groups": [
+    {
+      "orgId": 1,
+      "name": "caddy",
+      "folder": "Operations",
+      "interval": "1m",
+      "rules": [
+        {
+          "uid": "ffop037pr0yyoe",
+          "title": "Caddy High 5xx Error Rate",
+          "condition": "E",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "sum by (instance) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",handler=\"subroute\",code=~\"5..\"}[5m])) / sum by (instance) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",handler=\"subroute\"}[5m]))",
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}} 5xx ratio",
+                "maxDataPoints": 43200,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "D",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "sum by (instance) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",handler=\"subroute\"}[5m]))",
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}} total",
+                "maxDataPoints": 43200,
+                "refId": "D"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "B",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "F",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "D",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "F",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "E",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "($B > 0.10) * ($F > 1)",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "E",
+                "type": "math"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Alerting",
+          "for": "5m",
+          "keep_firing_for": "0s",
+          "annotations": {
+            "description": "Caddy on {{ $labels.instance }} has 5xx error ratio above 10% with traffic > 1 req/s, sustained for 5 minutes. Check for upstream failures or application crashes.",
+            "summary": "High 5xx error rate on {{ $labels.instance }}"
+          },
+          "labels": {
+            "severity": "warning",
+            "team": "ops"
+          },
+          "isPaused": false
+        },
+        {
+          "uid": "dfop04brbfev4d",
+          "title": "Caddy High 4xx Error Rate",
+          "condition": "E",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "sum by (instance) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",handler=\"subroute\",code=~\"4..\",code!=\"403\"}[5m])) / sum by (instance) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",handler=\"subroute\"}[5m]))",
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}}",
+                "maxDataPoints": 43200,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "D",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "sum by (instance) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",handler=\"subroute\"}[5m]))",
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}} total",
+                "maxDataPoints": 43200,
+                "refId": "D"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "B",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "F",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "D",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "F",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "E",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "($B > 0.25) * ($F > 1)",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "E",
+                "type": "math"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Alerting",
+          "for": "5m",
+          "keep_firing_for": "0s",
+          "annotations": {
+            "description": "Caddy on {{ $labels.instance }} has 4xx error ratio (excluding 403) above 25% with traffic > 1 req/s, sustained for 5 minutes. 403 is excluded because bots crawling Discuz action links generate large volumes of expected 403 responses. Check for broken clients, misconfigured routes, or auth issues.",
+            "summary": "High 4xx error rate on {{ $labels.instance }}"
+          },
+          "labels": {
+            "severity": "warning",
+            "team": "ops"
+          },
+          "isPaused": false
+        }
+      ]
+    },
+    {
+      "orgId": 1,
+      "name": "infrastructure",
+      "folder": "Operations",
+      "interval": "1m",
+      "rules": [
+        {
+          "uid": "dfoozguf7z3lsb",
+          "title": "Instance Down",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 300,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "up{job=~\"integrations/(node_exporter|unix)\"}",
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}}",
+                "maxDataPoints": 43200,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "B",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        1
+                      ],
+                      "type": "lt"
+                    }
+                  }
+                ],
+                "expression": "B",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "C",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "Alerting",
+          "execErrState": "Alerting",
+          "for": "5m",
+          "keep_firing_for": "0s",
+          "annotations": {
+            "description": "Node exporter on {{ $labels.instance }} has stopped reporting for more than 5 minutes. The machine may be down, or Alloy may have crashed.",
+            "summary": "Instance {{ $labels.instance }} is down or unreachable"
+          },
+          "labels": {
+            "severity": "critical",
+            "team": "ops"
+          },
+          "isPaused": false
+        }
+      ]
+    },
+    {
+      "orgId": 1,
+      "name": "traffic",
+      "folder": "Operations",
+      "interval": "5m",
+      "rules": [
+        {
+          "uid": "traffic-70pct",
+          "title": "Monthly Traffic Above 70 Percent",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "sum(increase(node_network_receive_bytes_total{instance=\"cn-hk-grafana\",device=\"eth0\"}[30d]) + increase(node_network_transmit_bytes_total{instance=\"cn-hk-grafana\",device=\"eth0\"}[30d]))",
+                "intervalMs": 1000,
+                "legendFormat": "30-day bidirectional traffic",
+                "maxDataPoints": 43200,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "B",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        490000000000
+                      ],
+                      "type": "gt"
+                    }
+                  }
+                ],
+                "expression": "B",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "C",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Alerting",
+          "for": "15m",
+          "keep_firing_for": "0s",
+          "annotations": {
+            "description": "cn-hk-grafana bidirectional traffic over the rolling 30-day window exceeded 490 GB (70% of the 700 GB monthly quota). This is a conservative local estimate; verify the provider billing panel before taking action.",
+            "summary": "cn-hk-grafana rolling 30-day traffic exceeded 490 GB"
+          },
+          "labels": {
+            "severity": "warning",
+            "team": "ops"
+          },
+          "isPaused": false
+        },
+        {
+          "uid": "traffic-85pct",
+          "title": "Monthly Traffic Above 85 Percent",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "sum(increase(node_network_receive_bytes_total{instance=\"cn-hk-grafana\",device=\"eth0\"}[30d]) + increase(node_network_transmit_bytes_total{instance=\"cn-hk-grafana\",device=\"eth0\"}[30d]))",
+                "intervalMs": 1000,
+                "legendFormat": "30-day bidirectional traffic",
+                "maxDataPoints": 43200,
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "B",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        595000000000
+                      ],
+                      "type": "gt"
+                    }
+                  }
+                ],
+                "expression": "B",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "C",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Alerting",
+          "for": "5m",
+          "keep_firing_for": "0s",
+          "annotations": {
+            "description": "cn-hk-grafana bidirectional traffic over the rolling 30-day window exceeded 595 GB (85% of the 700 GB monthly quota). This is a conservative local estimate; verify the provider billing panel before taking action.",
+            "summary": "cn-hk-grafana rolling 30-day traffic exceeded 595 GB"
+          },
+          "labels": {
+            "severity": "critical",
+            "team": "ops"
+          },
+          "isPaused": false
+        }
+      ]
+    },
+    {
+      "orgId": 1,
+      "name": "log-anomaly",
+      "folder": "Operations",
+      "interval": "1m",
+      "rules": [
+        {
+          "uid": "dfqrqn07gmxogd",
+          "title": "Container Error Log Spike",
+          "condition": "E",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "range",
+              "relativeTimeRange": {
+                "from": 900,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-logs",
+              "model": {
+                "expr": "sum by (container, instance) (\n  count_over_time({job=\"integrations/docker\", container!~\".*xray.*|.*hysteria.*|fossicdiscuz-nginx-1|durian_minecraft-website-1|certd|durian-registry\"} |~ `(?i)error` [15m])\n  or count_over_time({job=\"integrations/docker\", container=\"fossicdiscuz-nginx-1\"} |~ `(?i)error` !~ `(?i)(access forbidden by rule|No such file or directory)` [15m])\n  or count_over_time({job=\"integrations/docker\", container=\"durian_minecraft-website-1\"} |~ `(?i)error` !~ `No such file or directory` [15m])\n  or count_over_time({job=\"integrations/docker\", container=\"certd\"} |~ `(?i)error` !~ `(?i)NotFoundError:.*Not Found` [15m])\n  or count_over_time({job=\"integrations/docker\", container=\"durian-registry\"} |~ `(?i)error` !~ `err.code=\"(manifest|blob) unknown\"` [15m])\n)",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "queryType": "range",
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "B",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "E",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "$B >= 50",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "E",
+                "type": "math"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Alerting",
+          "for": "2m",
+          "keep_firing_for": "5m",
+          "annotations": {
+            "description": "Container {{ $labels.container }} on {{ $labels.instance }} logged {{ $values.B }} actionable error lines in the last 15 minutes (threshold: 50). Known scanner-generated 404/403 noise and expected registry lookup misses are filtered per container. Check: {container=\"{{ $labels.container }}\", instance=\"{{ $labels.instance }}\"} |~ \"(?i)error\"",
+            "summary": "Actionable error burst in {{ $labels.container }} on {{ $labels.instance }}"
+          },
+          "labels": {
+            "severity": "warning",
+            "team": "ops"
+          },
+          "isPaused": false
+        }
+      ]
+    },
+    {
+      "orgId": 1,
+      "name": "php-fpm",
+      "folder": "Operations",
+      "interval": "1m",
+      "rules": [
+        {
+          "uid": "cfvptb00ejxtsa",
+          "title": "PHP-FPM Pool Saturated",
+          "condition": "E",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "range",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-logs",
+              "model": {
+                "expr": "sum by (container, instance) (count_over_time({job=\"integrations/docker\", container=\"fossicdiscuz-php-1\", instance=\"cn-hk-fossic.jnxyp.net\"} |= \"server reached pm.max_children\" [10m]))",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "queryType": "range",
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "B",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "E",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "$B > 0",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "E",
+                "type": "math"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Alerting",
+          "for": "2m",
+          "keep_firing_for": "5m",
+          "annotations": {
+            "description": "PHP-FPM container {{ $labels.container }} on {{ $labels.instance }} reached pm.max_children within the last 10 minutes. Requests may queue or fail. Check PHP-FPM slow logs, request rate, CPU, memory, and upstream 5xx responses.",
+            "summary": "PHP-FPM pool saturated on {{ $labels.instance }}"
+          },
+          "labels": {
+            "severity": "warning",
+            "team": "ops"
+          },
+          "isPaused": false
+        }
+      ]
+    },
+    {
+      "orgId": 1,
+      "name": "restic-backup",
+      "folder": "Operations",
+      "interval": "1m",
+      "rules": [
+        {
+          "uid": "bfooyzjmhv474e",
+          "title": "Restic Backup Missing",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "instant",
+              "relativeTimeRange": {
+                "from": 90000,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-logs",
+              "model": {
+                "expr": "sum by (instance) (count_over_time({job=\"restic-backup\"}[25h])) unless sum by (instance) (count_over_time({job=\"restic-backup\"} |= \"Backup complete\" [25h]))",
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}}",
+                "maxDataPoints": 43200,
+                "queryType": "instant",
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "B",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        0
+                      ],
+                      "type": "gt"
+                    }
+                  }
+                ],
+                "expression": "B",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "C",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "Alerting",
+          "for": "5m",
+          "keep_firing_for": "0s",
+          "annotations": {
+            "description": "{{ $labels.instance }} wrote to /var/log/restic/backup.log in the last 25h but never logged 'Backup complete'. The backup is failing or hanging. Check: {job=\"restic-backup\", instance=\"{{ $labels.instance }}\"}. If restic has been running far longer than a minute it is almost certainly stuck retrying uploads — kill it, run 'restic unlock', then re-run backup.sh.",
+            "summary": "No backup completed on {{ $labels.instance }} in the last 25h"
+          },
+          "labels": {
+            "severity": "warning",
+            "team": "ops"
+          },
+          "isPaused": false
+        },
+        {
+          "uid": "cfucxsrf1aq68d",
+          "title": "Restic Backup Failed",
+          "condition": "C",
+          "data": [
+            {
+              "refId": "A",
+              "queryType": "range",
+              "relativeTimeRange": {
+                "from": 3600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-logs",
+              "model": {
+                "expr": "count_over_time({job=\"restic-backup\"} |= \"BACKUP FAILED\" [1h])",
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}}",
+                "maxDataPoints": 43200,
+                "queryType": "range",
+                "refId": "A"
+              }
+            },
+            {
+              "refId": "B",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "expression": "A",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "reducer": "last",
+                "refId": "B",
+                "settings": {
+                  "mode": "dropNN"
+                },
+                "type": "reduce"
+              }
+            },
+            {
+              "refId": "C",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 0,
+                "to": 0
+              },
+              "datasourceUid": "__expr__",
+              "model": {
+                "conditions": [
+                  {
+                    "evaluator": {
+                      "params": [
+                        0
+                      ],
+                      "type": "gt"
+                    }
+                  }
+                ],
+                "expression": "B",
+                "intervalMs": 1000,
+                "maxDataPoints": 43200,
+                "refId": "C",
+                "type": "threshold"
+              }
+            }
+          ],
+          "noDataState": "OK",
+          "execErrState": "OK",
+          "for": "5m",
+          "keep_firing_for": "0s",
+          "annotations": {
+            "description": "backup.sh logged 'BACKUP FAILED' on {{ $labels.instance }} within the last hour. Common causes: upload timeout (link saturated or throttled), another backup still running (flock), stale repository lock, or insufficient disk for DB dumps. Inspect the reason: {job=\"restic-backup\", instance=\"{{ $labels.instance }}\"} |= \"BACKUP FAILED\". Full log: /var/log/restic/backup.log. Note this rule complements 'Restic Backup Missing' — this one catches explicit failures within the hour, that one catches silent absence after 25h.",
+            "summary": "Restic backup failed on {{ $labels.instance }}"
+          },
+          "labels": {
+            "severity": "warning",
+            "team": "ops"
+          },
+          "isPaused": false
+        }
+      ]
+    }
+  ]
+}

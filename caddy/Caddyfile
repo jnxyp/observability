@@ -1,0 +1,55 @@
+{
+	email {$ACME_EMAIL}
+	metrics
+}
+
+(compression) {
+	encode zstd gzip {
+		minimum_length 1024
+	}
+}
+
+(logging) {
+	log {
+		output file /var/log/caddy/access.log {
+			roll_size 500mb
+			roll_keep 10
+			roll_keep_for 168h
+		}
+		format json
+	}
+}
+
+(ingest_auth) {
+	basic_auth {
+		cn-hk-nn {$INGEST_HASH_CN_HK_NN}
+		cn-hk-nn-2 {$INGEST_HASH_CN_HK_NN_2}
+		cn-hk-docker {$INGEST_HASH_CN_HK_DOCKER}
+		cn-sh-nn {$INGEST_HASH_CN_SH_NN}
+		cn-sz-nn {$INGEST_HASH_CN_SZ_NN}
+		us-sv-docker {$INGEST_HASH_US_SV_DOCKER}
+		us-va-docker {$INGEST_HASH_US_VA_DOCKER}
+		cn-hk-fossic {$INGEST_HASH_CN_HK_FOSSIC}
+	}
+}
+
+{$GRAFANA_DOMAIN} {
+	import compression
+	import logging
+
+	@loki_push path /loki/api/v1/push
+	handle @loki_push {
+		import ingest_auth
+		reverse_proxy 127.0.0.1:3100
+	}
+
+	@prometheus_write path /api/v1/write
+	handle @prometheus_write {
+		import ingest_auth
+		reverse_proxy 127.0.0.1:9090
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:3000
+	}
+}

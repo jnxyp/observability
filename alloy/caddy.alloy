@@ -1,0 +1,31 @@
+local.file_match "caddy_access" {
+  path_targets = [{"__path__" = "/var/log/caddy/access.log"}]
+}
+
+loki.source.file "caddy_access" {
+  targets    = local.file_match.caddy_access.targets
+  forward_to = [loki.process.caddy_access.receiver]
+}
+
+loki.process "caddy_access" {
+  forward_to = [loki.write.local.receiver]
+
+  stage.json {
+    expressions = {
+      host = "request.host",
+    }
+  }
+
+  stage.labels {
+    values = {
+      host = "host",
+    }
+  }
+
+  stage.static_labels {
+    values = {
+      job      = "caddy",
+      instance = constants.hostname,
+    }
+  }
+}

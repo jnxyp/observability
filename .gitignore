@@ -1,0 +1,30 @@
+# Runtime secrets. Commit only the matching *.example templates.
+**/*.env
+!**/*.env.example
+**/*credentials*
+!**/*credentials*.example
+secrets/
+
+# Private keys and certificates.
+*.key
+*.pem
+*.p12
+*.pfx
+id_ed25519*
+id_rsa*
+
+# Runtime data and generated backup artifacts.
+**/data/
+postgres/
+restic/_dumps/
+restic/_snapshots/
+restic/cache/
+
+# Logs, temporary files and local tooling.
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

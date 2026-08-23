@@ -1,0 +1,9 @@
+# Live databases and locally rebuildable telemetry state.
+observability/postgres/data
+observability/prometheus/data
+observability/loki/data
+observability/grafana/data
+
+# Temporary and generated files.
+**/.DS_Store
+**/Thumbs.db

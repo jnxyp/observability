@@ -1,0 +1,11 @@
+{
+  "features": {
+    "containerd-snapshotter": false
+  },
+  "storage-driver": "overlay2",
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "20m",
+    "max-file": "3"
+  }
+}

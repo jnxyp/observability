@@ -1,0 +1,147 @@
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+prometheus.exporter.unix "host" {
+  include_exporter_metrics = true
+  disable_collectors       = ["mdadm"]
+  enable_collectors        = ["systemd", "processes"]
+}
+
+prometheus.scrape "host" {
+  targets         = prometheus.exporter.unix.host.targets
+  forward_to      = [prometheus.relabel.host.receiver]
+  job_name        = "integrations/node_exporter"
+  scrape_interval = "30s"
+}
+
+prometheus.scrape "alloy" {
+  targets = [{
+    __address__ = "127.0.0.1:12345",
+  }]
+  forward_to      = [prometheus.relabel.host.receiver]
+  job_name        = "integrations/alloy"
+  scrape_interval = "30s"
+}
+
+prometheus.exporter.cadvisor "containers" {
+  docker_only = true
+}
+
+discovery.relabel "container_metrics" {
+  targets = prometheus.exporter.cadvisor.containers.targets
+
+  rule {
+    target_label = "job"
+    replacement  = "integrations/docker"
+  }
+
+  rule {
+    target_label = "instance"
+    replacement  = constants.hostname
+  }
+}
+
+prometheus.scrape "container_metrics" {
+  targets         = discovery.relabel.container_metrics.output
+  forward_to      = [prometheus.remote_write.local.receiver]
+  scrape_interval = "30s"
+}
+
+prometheus.scrape "caddy" {
+  targets = [{
+    __address__ = "127.0.0.1:2019",
+  }]
+  forward_to      = [prometheus.relabel.host.receiver]
+  job_name        = "integrations/caddy"
+  scrape_interval = "30s"
+}
+
+prometheus.relabel "host" {
+  forward_to = [prometheus.remote_write.local.receiver]
+
+  rule {
+    target_label = "instance"
+    replacement  = constants.hostname
+  }
+}
+
+prometheus.remote_write "local" {
+  endpoint {
+    url = "http://127.0.0.1:9090/api/v1/write"
+
+    queue_config {
+      capacity             = 2500
+      max_shards           = 2
+      min_shards           = 1
+      max_samples_per_send = 1000
+    }
+  }
+}
+
+loki.write "local" {
+  endpoint {
+    url = "http://127.0.0.1:3100/loki/api/v1/push"
+  }
+}
+
+loki.source.journal "system" {
+  max_age    = "24h"
+  forward_to = [loki.process.journal.receiver]
+  labels = {
+    instance = constants.hostname,
+    job      = "systemd-journal",
+  }
+}
+
+loki.process "journal" {
+  forward_to = [loki.write.local.receiver]
+
+  stage.labels {
+    values = {
+      unit = "__journal__systemd_unit",
+    }
+  }
+}
+
+discovery.docker "containers" {
+  host             = "unix:///var/run/docker.sock"
+  refresh_interval = "5s"
+}
+
+discovery.relabel "containers" {
+  targets = discovery.docker.containers.targets
+
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+
+  rule {
+    source_labels = ["__meta_docker_container_log_stream"]
+    target_label  = "stream"
+  }
+
+  rule {
+    target_label = "job"
+    replacement  = "docker"
+  }
+
+  rule {
+    target_label = "instance"
+    replacement  = constants.hostname
+  }
+}
+
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.containers.output
+  forward_to = [loki.write.local.receiver]
+}

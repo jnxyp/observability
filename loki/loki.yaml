@@ -1,0 +1,85 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+  log_level: info
+  http_server_read_timeout: 5m
+  http_server_write_timeout: 5m
+  grpc_server_max_concurrent_streams: 100
+
+common:
+  instance_addr: 127.0.0.1
+  path_prefix: /loki
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+  storage:
+    s3:
+      endpoint: ${COS_ENDPOINT}
+      region: ${COS_REGION}
+      bucketnames: ${COS_BUCKET_NAME}
+      access_key_id: ${COS_ACCESS_KEY_ID}
+      secret_access_key: ${COS_SECRET_ACCESS_KEY}
+      s3forcepathstyle: false
+      insecure: false
+      sse:
+        type: SSE-S3
+
+schema_config:
+  configs:
+    - from: 2026-08-23
+      store: tsdb
+      object_store: s3
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+
+ingester:
+  chunk_encoding: snappy
+  wal:
+    enabled: true
+    dir: /loki/wal
+
+query_range:
+  align_queries_with_step: true
+  parallelise_shardable_queries: true
+  cache_results: true
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 128
+
+frontend:
+  encoding: protobuf
+  compress_responses: true
+
+querier:
+  max_concurrent: 2
+
+compactor:
+  working_directory: /loki/compactor
+  retention_enabled: true
+  delete_request_store: s3
+  retention_delete_delay: 2h
+  retention_delete_worker_count: 10
+
+limits_config:
+  retention_period: 4320h
+  ingestion_rate_mb: 4
+  ingestion_burst_size_mb: 8
+  max_query_lookback: 4320h
+  max_query_length: 4320h
+  split_queries_by_interval: 24h
+  max_entries_limit_per_query: 5000
+  query_timeout: 5m
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h
+  allow_structured_metadata: true
+  volume_enabled: true
+
+analytics:
+  reporting_enabled: false

@@ -1,0 +1,1350 @@
+{
+  "editable": false,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": false,
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [
+        "docker-integration"
+      ],
+      "title": "All Docker dashboards",
+      "type": "dashboards"
+    }
+  ],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "title": "Integration Status",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "Shows if metrics are being received for the selected time range.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "fixed"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "color": "light-red",
+                  "index": 0,
+                  "text": "No metrics received - Check configuration"
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "from": 0,
+                "result": {
+                  "color": "light-red",
+                  "index": 1,
+                  "text": "Failed to collect metrics"
+                },
+                "to": 0
+              },
+              "type": "range"
+            },
+            {
+              "options": {
+                "from": 1,
+                "result": {
+                  "color": "light-green",
+                  "index": 2,
+                  "text": "Receiving metrics"
+                },
+                "to": 1000000
+              },
+              "type": "range"
+            }
+          ],
+          "noValue": "No data",
+          "unit": "string"
+        }
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 8,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "pluginVersion": "v10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$prometheus_datasource"
+          },
+          "expr": "vector(1) and on() ((count(up{asserts_env=~\"$env\", asserts_site=~\"$site\", job=~\"$job\"} == 1) > 0) and (absent(absent(machine_scrape_error{asserts_env=~\"$env\", asserts_site=~\"$site\", job=~\"$job\"})))) or vector(0) and on() ((count(up{asserts_env=~\"$env\", asserts_site=~\"$site\", job=~\"$job\"}) > 0) and (absent(machine_scrape_error{asserts_env=~\"$env\", asserts_site=~\"$site\", job=~\"$job\"})))\n"
+        }
+      ],
+      "title": "Metrics",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "Shows the timestamp of the latest metrics received for this integration in the last 24 hours.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "fixed"
+          },
+          "noValue": "No data",
+          "unit": "dateTimeFromNow"
+        }
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 8,
+        "x": 8,
+        "y": 0
+      },
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "Time"
+        }
+      },
+      "pluginVersion": "v10.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$prometheus_datasource"
+          },
+          "expr": "vector(1) and on() ((count(up{asserts_env=~\"$env\", asserts_site=~\"$site\", job=~\"$job\"} == 1) > 0) and (absent(absent(machine_scrape_error{asserts_env=~\"$env\", asserts_site=~\"$site\", job=~\"$job\"})))) or vector(0) and on() ((count(up{asserts_env=~\"$env\", asserts_site=~\"$site\", job=~\"$job\"}) > 0) and (absent(machine_scrape_error{asserts_env=~\"$env\", asserts_site=~\"$site\", job=~\"$job\"})))\n"
+        }
+      ],
+      "timeFrom": "now-24h",
+      "title": "Latest metrics received",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "Shows the installed version of this integration.",
+      "gridPos": {
+        "h": 2,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "options": {
+        "content": "<p style=\"text-align: center\">1.4.0</p>",
+        "mode": "html"
+      },
+      "pluginVersion": "v10.0.0",
+      "title": "Integration version",
+      "type": "text"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 0,
+        "x": 0,
+        "y": 3
+      },
+      "id": 1,
+      "panels": [],
+      "title": "Overview",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${prometheus_datasource}"
+      },
+      "description": "Total number of running containers last seen by the exporter.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "fixed"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#5794f2",
+                "value": null
+              }
+            ]
+          },
+          "unit": ""
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Containers"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": ""
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 4
+      },
+      "id": 2,
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "count(container_last_seen{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\",job=~\"$job\",instance=~\"$instance\", name!=\"\"})",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{instance}}: Containers",
+          "refId": "Containers"
+        }
+      ],
+      "title": "Containers",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${prometheus_datasource}"
+      },
+      "description": "Total number of distinct images found across running containers.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "fixed"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#5794f2",
+                "value": null
+              }
+            ]
+          },
+          "unit": ""
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Images"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": ""
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 4
+      },
+      "id": 3,
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "count (sum by (image) (container_last_seen{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\",job=~\"$job\",instance=~\"$instance\", name!=\"\"}))",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{instance}}: Images",
+          "refId": "Images"
+        }
+      ],
+      "title": "Images",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "CPU usage (avg): Cpu time consumed in seconds by container.  \n",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "continuous-BlYlRd"
+          },
+          "decimals": 1,
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#5794f2",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "CPU usage"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 4
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "avg by (job,instance, name) (rate(container_cpu_usage_seconds_total{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\",job=~\"$job\",instance=~\"$instance\", name!=\"\"}[$__rate_interval])) * 100",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{instance}}",
+          "refId": "CPU usage"
+        }
+      ],
+      "title": "CPU usage",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${prometheus_datasource}"
+      },
+      "description": "Memory reserved by the containers on the machine.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "continuous-BlYlRd"
+          },
+          "decimals": 1,
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#5794f2",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Memory reserved"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 4
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "sum(\n  container_spec_memory_reservation_limit_bytes{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\",job=~\"$job\",instance=~\"$instance\", name!=\"\"}\n  )\n/ \navg(\n    machine_memory_bytes{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\",job=~\"$job\",instance=~\"$instance\"}\n) * 100\n",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{instance}}: Memory reserved",
+          "refId": "Memory reserved"
+        }
+      ],
+      "title": "Memory reserved",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${prometheus_datasource}"
+      },
+      "description": "Memory used by all containers out of machine total.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "continuous-BlYlRd"
+          },
+          "decimals": 1,
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#5794f2",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Memory used"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 4
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "avg(\n  sum by (instance) (container_memory_usage_bytes{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\",job=~\"$job\",instance=~\"$instance\", name!=\"\"})\n  /\n  avg by (instance) (machine_memory_bytes{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\",job=~\"$job\",instance=~\"$instance\"})\n) * 100\n",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{instance}}: Memory used",
+          "refId": "Memory used"
+        }
+      ],
+      "title": "Memory used",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "mode": "reduceRow",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 0,
+        "x": 20,
+        "y": 8
+      },
+      "id": 7,
+      "panels": [],
+      "title": "Compute",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${prometheus_datasource}"
+      },
+      "description": "CPU time consumed in seconds by container.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisSoftMax": 100,
+            "fillOpacity": 30,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "percent"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "CPU usage"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "100 *\n  rate(container_cpu_usage_seconds_total{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}[$__rate_interval])\n",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}",
+          "refId": "CPU usage"
+        }
+      ],
+      "title": "CPU usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${prometheus_datasource}"
+      },
+      "description": "Current memory usage in bytes, including all memory regardless of when it was accessed by container.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 30,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Memory usage"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".*(T|t)otal.*"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#ffb357",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "custom.fillOpacity",
+                "value": 0
+              },
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "container_memory_usage_bytes{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}",
+          "refId": "Memory usage"
+        }
+      ],
+      "title": "Memory usage",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 0,
+        "x": 24,
+        "y": 16
+      },
+      "id": 10,
+      "panels": [],
+      "title": "Network",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "received (avg): Cumulative count of bytes received.  \n\ntransmitted (avg): Cumulative count of bytes transmitted.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisLabel": "out(-) | in(+)",
+            "fillOpacity": 30,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "decimals": 1,
+          "noValue": "No traffic",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "bps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/transmit|tx|Tx|out/"
+            },
+            "properties": [
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "received"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "transmitted"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 17
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "8 *\n  rate(container_network_receive_bytes_total{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}[$__rate_interval])\n",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}/{{interface}} receive",
+          "refId": "received"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "8 *\n  rate(container_network_transmit_bytes_total{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}[$__rate_interval])\n",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}/{{interface}} transmit",
+          "refId": "transmitted"
+        }
+      ],
+      "title": "Network traffic",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "drops received (avg): Number of packets received and dropped.  \n\ndrops transmitted (avg): Number of packets dropped while transmitting.  \n\nerrors received (avg): Number of packets received with errors.  \n\nerrors transmitted (avg): Number of packets transmitted with errors.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 30,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never",
+            "stacking": {
+              "mode": "normal"
+            }
+          },
+          "decimals": 1,
+          "noValue": "No errors",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "pps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "drops received"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "pps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "drops transmitted"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "pps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "errors received"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "pps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "errors transmitted"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "pps"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 17
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "rate(container_network_receive_packets_dropped_total{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}[$__rate_interval])",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}/{{interface}} rx drops",
+          "refId": "drops received"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "rate(container_network_transmit_packets_dropped_total{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}[$__rate_interval])",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}/{{interface}} tx drops",
+          "refId": "drops transmitted"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "rate(container_network_receive_errors_total{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}[$__rate_interval])",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}/{{interface}} rx errors",
+          "refId": "errors received"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "rate(container_network_transmit_errors_total{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}[$__rate_interval])",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}/{{interface}} tx errors",
+          "refId": "errors transmitted"
+        }
+      ],
+      "title": "Network errors and drops",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 0,
+        "x": 24,
+        "y": 24
+      },
+      "id": 13,
+      "panels": [],
+      "title": "Storage",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "Disk space usage (avg): Disk space usage in bytes.  \n",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "fillOpacity": 1,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "decbytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Disk space usage"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "decbytes"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 25
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "container_fs_usage_bytes{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}/{{device}}",
+          "refId": "Disk space usage"
+        }
+      ],
+      "title": "Disk usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "description": "Disk reads (avg): The number of read requests per second for the device/volume.  \n\nDisk writes (avg): The number of write requests per second for the device/volume.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#5794f2",
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": true,
+            "axisLabel": "write(-) | read(+)",
+            "fillOpacity": 1,
+            "gradientMode": "opacity",
+            "lineInterpolation": "smooth",
+            "lineWidth": 2,
+            "showPoints": "never"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "reqps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/write|written/"
+            },
+            "properties": [
+              {
+                "id": "custom.transform",
+                "value": "negative-Y"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Disk reads"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "reqps"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Disk writes"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "reqps"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 25
+      },
+      "id": 15,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "v11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "rate(container_fs_reads_total{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}[$__rate_interval])",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}/{{device}} read",
+          "refId": "Disk reads"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${prometheus_datasource}"
+          },
+          "expr": "rate(container_fs_writes_total{asserts_env=~\"$env\", asserts_site=~\"$site\", job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\",name=~\"$name\"}[$__rate_interval])",
+          "format": "time_series",
+          "instant": false,
+          "legendFormat": "{{name}}/{{device}} write",
+          "refId": "Disk writes"
+        }
+      ],
+      "title": "Disk I/O",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "30s",
+  "rows": [],
+  "schemaVersion": 39,
+  "tags": [
+    "docker-integration"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": ".*",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${prometheus_datasource}"
+        },
+        "hide": 2,
+        "includeAll": true,
+        "label": "Asserts environment",
+        "multi": false,
+        "name": "env",
+        "query": "label_values(asserts:mixin_workload_job, asserts_env)",
+        "refresh": 2,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".*",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${prometheus_datasource}"
+        },
+        "hide": 2,
+        "includeAll": true,
+        "label": "Asserts site",
+        "multi": false,
+        "name": "site",
+        "query": "label_values(asserts:mixin_workload_job{asserts_env=~\"$env\"}, asserts_site)",
+        "refresh": 2,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "label": "Prometheus data source",
+        "name": "prometheus_datasource",
+        "query": "prometheus",
+        "regex": "(?!grafanacloud-usage|grafanacloud-ml-metrics).+",
+        "type": "datasource"
+      },
+      {
+        "allValue": ".+",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${prometheus_datasource}"
+        },
+        "includeAll": true,
+        "label": "Job",
+        "multi": true,
+        "name": "job",
+        "query": "label_values(container_last_seen{job!=\"kubelet\"}, job)",
+        "refresh": 2,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".+",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${prometheus_datasource}"
+        },
+        "includeAll": false,
+        "label": "Instance",
+        "multi": false,
+        "name": "instance",
+        "query": "label_values(container_last_seen{job!=\"kubelet\",job=~\"$job\"}, instance)",
+        "refresh": 2,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": ".+",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${prometheus_datasource}"
+        },
+        "includeAll": true,
+        "label": "Name",
+        "multi": true,
+        "name": "name",
+        "query": "label_values(container_last_seen{job!=\"kubelet\", name!=\"\",job=~\"$job\",instance=~\"$instance\"}, name)",
+        "refresh": 2,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {
+    "time_options": [
+      "now-1h"
+    ]
+  },
+  "timezone": "default",
+  "title": "Docker overview",
+  "uid": "integration-docker-overview",
+  "version": 1
+}

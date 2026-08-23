@@ -1,0 +1,19 @@
+local.file_match "restic_backup_logs" {
+  path_targets = [{"__path__" = "/var/log/restic/backup.log"}]
+}
+
+loki.source.file "restic_backup_logs" {
+  targets    = local.file_match.restic_backup_logs.targets
+  forward_to = [loki.process.restic_backup_logs.receiver]
+}
+
+loki.process "restic_backup_logs" {
+  forward_to = [loki.write.local.receiver]
+
+  stage.static_labels {
+    values = {
+      job      = "restic-backup",
+      instance = constants.hostname,
+    }
+  }
+}

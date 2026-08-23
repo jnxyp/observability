@@ -1,0 +1,3 @@
+CONFIG_FILE="/etc/alloy/"
+CUSTOM_ARGS=""
+RESTART_ON_UPGRADE=true
