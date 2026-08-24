@@ -119,7 +119,7 @@ services:
       GF_SMTP_USER: resend
       GF_SMTP_PASSWORD: ${SMTP_PASSWORD:?set SMTP_PASSWORD}
       GF_SMTP_FROM_ADDRESS: ${SMTP_FROM_ADDRESS:?set SMTP_FROM_ADDRESS}
-      GF_SMTP_FROM_NAME: jnxyp Grafana
+      GF_SMTP_FROM_NAME: Durian Observebility Platform
       GF_SMTP_STARTTLS_POLICY: MandatoryStartTLS
       GF_LOG_MODE: console
     ports:
