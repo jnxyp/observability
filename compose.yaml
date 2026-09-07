@@ -35,7 +35,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 10
-    mem_limit: 512m
+    mem_limit: 256m
     cpus: 0.35
     security_opt:
       - no-new-privileges:true
@@ -59,7 +59,7 @@ services:
     volumes:
       - ${OBSERVABILITY_ROOT:-/home/ubuntu/docker_projects/observability}/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - ${OBSERVABILITY_ROOT:-/home/ubuntu/docker_projects/observability}/prometheus/data:/prometheus
-    mem_limit: 1g
+    mem_limit: 512m
     cpus: 0.60
     security_opt:
       - no-new-privileges:true
@@ -128,7 +128,7 @@ services:
       - ${OBSERVABILITY_ROOT:-/home/ubuntu/docker_projects/observability}/grafana/data:/var/lib/grafana
       - ${OBSERVABILITY_ROOT:-/home/ubuntu/docker_projects/observability}/grafana/provisioning:/etc/grafana/provisioning:ro
       - ${OBSERVABILITY_ROOT:-/home/ubuntu/docker_projects/observability}/grafana/dashboards:/var/lib/grafana/dashboards:ro
-    mem_limit: 512m
+    mem_limit: 1g
     cpus: 0.30
     security_opt:
       - no-new-privileges:true
