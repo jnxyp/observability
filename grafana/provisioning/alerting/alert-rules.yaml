@@ -335,7 +335,7 @@
               },
               "datasourceUid": "grafanacloud-prom",
               "model": {
-                "expr": "sum(increase(node_network_receive_bytes_total{instance=\"cn-hk-grafana\",device=\"eth0\"}[30d]) + increase(node_network_transmit_bytes_total{instance=\"cn-hk-grafana\",device=\"eth0\"}[30d]))",
+                "expr": "sum(increase(node_network_receive_bytes_total{instance=~\"cn-hk-grafana(\\\\.jnxyp\\\\.net)?\",device=\"eth0\"}[30d]) + increase(node_network_transmit_bytes_total{instance=~\"cn-hk-grafana(\\\\.jnxyp\\\\.net)?\",device=\"eth0\"}[30d]))",
                 "intervalMs": 1000,
                 "legendFormat": "30-day bidirectional traffic",
                 "maxDataPoints": 43200,
@@ -394,8 +394,8 @@
           "for": "15m",
           "keepFiringFor": "0s",
           "annotations": {
-            "description": "cn-hk-grafana bidirectional traffic over the rolling 30-day window exceeded 490 GB (70% of the 700 GB monthly quota). This is a conservative local estimate; verify the provider billing panel before taking action.",
-            "summary": "cn-hk-grafana rolling 30-day traffic exceeded 490 GB"
+            "description": "cn-hk-grafana.jnxyp.net bidirectional traffic over the rolling 30-day window exceeded 490 GB (70% of the 700 GB monthly quota). The query includes the former short instance label to preserve history across the 2026-09-07 rename. This is a conservative local estimate; verify the provider billing panel before taking action.",
+            "summary": "cn-hk-grafana.jnxyp.net rolling 30-day traffic exceeded 490 GB"
           },
           "labels": {
             "severity": "warning",
@@ -417,7 +417,7 @@
               },
               "datasourceUid": "grafanacloud-prom",
               "model": {
-                "expr": "sum(increase(node_network_receive_bytes_total{instance=\"cn-hk-grafana\",device=\"eth0\"}[30d]) + increase(node_network_transmit_bytes_total{instance=\"cn-hk-grafana\",device=\"eth0\"}[30d]))",
+                "expr": "sum(increase(node_network_receive_bytes_total{instance=~\"cn-hk-grafana(\\\\.jnxyp\\\\.net)?\",device=\"eth0\"}[30d]) + increase(node_network_transmit_bytes_total{instance=~\"cn-hk-grafana(\\\\.jnxyp\\\\.net)?\",device=\"eth0\"}[30d]))",
                 "intervalMs": 1000,
                 "legendFormat": "30-day bidirectional traffic",
                 "maxDataPoints": 43200,
@@ -476,8 +476,8 @@
           "for": "5m",
           "keepFiringFor": "0s",
           "annotations": {
-            "description": "cn-hk-grafana bidirectional traffic over the rolling 30-day window exceeded 595 GB (85% of the 700 GB monthly quota). This is a conservative local estimate; verify the provider billing panel before taking action.",
-            "summary": "cn-hk-grafana rolling 30-day traffic exceeded 595 GB"
+            "description": "cn-hk-grafana.jnxyp.net bidirectional traffic over the rolling 30-day window exceeded 595 GB (85% of the 700 GB monthly quota). The query includes the former short instance label to preserve history across the 2026-09-07 rename. This is a conservative local estimate; verify the provider billing panel before taking action.",
+            "summary": "cn-hk-grafana.jnxyp.net rolling 30-day traffic exceeded 595 GB"
           },
           "labels": {
             "severity": "critical",

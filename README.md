@@ -46,6 +46,8 @@ curl -fsS http://127.0.0.1:3000/api/health
 
 文件 provisioning 的恢复保持时间字段必须使用 `keepFiringFor`（如 `5m`）；普通规则 API 返回的 `keep_firing_for` 不能直接照搬进 provisioning 文件。部署后同时检查规则导出和运行时配置，确认保持时间已生效。
 
+服务器静态 hostname 使用完整域名，并由 `system/cloud.cfg.d/99-preserve-hostname.cfg` 阻止 cloud-init 在重启时改回云平台下发的短名。Alloy 的 `constants.hostname` 会把该值写入 metrics 和 logs 的 `instance` 标签；修改 hostname 后需 reload Alloy。依赖历史数据的查询应在保留期内兼容旧标签。
+
 ## 更新流程
 
 所有配置修改先在本地仓库完成并验证，然后 commit、push；服务器不直接修改仓库中的跟踪文件：
