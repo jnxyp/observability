@@ -131,7 +131,7 @@ discovery.relabel "containers" {
 
   rule {
     target_label = "job"
-    replacement  = "docker"
+    replacement  = "integrations/docker"
   }
 
   rule {

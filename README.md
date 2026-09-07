@@ -42,6 +42,10 @@ curl -fsS http://127.0.0.1:3000/api/health
 
 变更 Grafana provisioning 后，可重启 Grafana，或使用管理员凭据调用对应的 provisioning reload API。正式部署前应再次检查 `git status`，确认没有 secret 或运行数据进入暂存区。
 
+容器 metrics 和 logs 的 `job` 标签统一为 `integrations/docker`。本机 2026-09-07 修正前的容器日志使用 `docker`，错误日志告警保留两种标签的匹配以覆盖历史窗口。Grafana/Loki 的查询审计日志可能包含 `error` 字样，因此这两个容器按 logfmt 的实际 `level` 筛选错误，避免查询文本触发告警。
+
+文件 provisioning 的恢复保持时间字段必须使用 `keepFiringFor`（如 `5m`）；普通规则 API 返回的 `keep_firing_for` 不能直接照搬进 provisioning 文件。部署后同时检查规则导出和运行时配置，确认保持时间已生效。
+
 ## 更新流程
 
 所有配置修改先在本地仓库完成并验证，然后 commit、push；服务器不直接修改仓库中的跟踪文件：
