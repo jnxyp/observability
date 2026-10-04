@@ -841,7 +841,7 @@
               },
               "datasourceUid": "grafanacloud-prom",
               "model": {
-                "expr": "((\n  node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} / node_filesystem_size_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} * 100 < 40\nand\n  predict_linear(node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"}[6h], 24*60*60) < 0\nand\n  node_filesystem_readonly{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} == 0\n)) * 0 + 1",
+                "expr": "((\n  node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} / node_filesystem_size_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} * 100 < 40\nand\n  predict_linear(node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"}[6h], 24*60*60) < 0\nand\n  predict_linear(node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"}[1h], 24*60*60) < 0\nand\n  node_filesystem_readonly{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} == 0\n)) * 0 + 1",
                 "instant": true,
                 "intervalMs": 1000,
                 "legendFormat": "{{instance}}",
@@ -894,6 +894,23 @@
                 "refId": "C",
                 "type": "threshold"
               }
+            },
+            {
+              "refId": "D",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "100 * node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} / node_filesystem_size_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"}",
+                "instant": true,
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}}",
+                "maxDataPoints": 43200,
+                "refId": "D"
+              }
             }
           ],
           "noDataState": "OK",
@@ -901,8 +918,8 @@
           "for": "1h",
           "keepFiringFor": "0s",
           "annotations": {
-            "description": "Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left and is filling up.",
-            "summary": "Filesystem is predicted to run out of space within the next 24 hours.",
+            "description": "Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf \"%.2f\" $values.D.Value }}% available space left and is filling up.",
+            "summary": "Filesystem is predicted to run out of space within the next 24 hours. Confirmed by both 6-hour and 1-hour trends.",
             "upstream_alert": "NodeFilesystemSpaceFillingUp",
             "upstream_source": "prometheus/node_exporter node-mixin"
           },
@@ -926,7 +943,7 @@
               },
               "datasourceUid": "grafanacloud-prom",
               "model": {
-                "expr": "((\n  node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} / node_filesystem_size_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} * 100 < 20\nand\n  predict_linear(node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"}[6h], 4*60*60) < 0\nand\n  node_filesystem_readonly{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} == 0\n)) * 0 + 1",
+                "expr": "((\n  node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} / node_filesystem_size_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} * 100 < 20\nand\n  predict_linear(node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"}[6h], 4*60*60) < 0\nand\n  predict_linear(node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"}[1h], 4*60*60) < 0\nand\n  node_filesystem_readonly{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} == 0\n)) * 0 + 1",
                 "instant": true,
                 "intervalMs": 1000,
                 "legendFormat": "{{instance}}",
@@ -979,6 +996,23 @@
                 "refId": "C",
                 "type": "threshold"
               }
+            },
+            {
+              "refId": "D",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "100 * node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} / node_filesystem_size_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"}",
+                "instant": true,
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}}",
+                "maxDataPoints": 43200,
+                "refId": "D"
+              }
             }
           ],
           "noDataState": "OK",
@@ -986,8 +1020,8 @@
           "for": "1h",
           "keepFiringFor": "0s",
           "annotations": {
-            "description": "Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left and is filling up fast.",
-            "summary": "Filesystem is predicted to run out of space within the next 4 hours.",
+            "description": "Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf \"%.2f\" $values.D.Value }}% available space left and is filling up fast.",
+            "summary": "Filesystem is predicted to run out of space within the next 4 hours. Confirmed by both 6-hour and 1-hour trends.",
             "upstream_alert": "NodeFilesystemSpaceFillingUp",
             "upstream_source": "prometheus/node_exporter node-mixin"
           },
@@ -1064,6 +1098,23 @@
                 "refId": "C",
                 "type": "threshold"
               }
+            },
+            {
+              "refId": "D",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "100 * node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} / node_filesystem_size_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"}",
+                "instant": true,
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}}",
+                "maxDataPoints": 43200,
+                "refId": "D"
+              }
             }
           ],
           "noDataState": "OK",
@@ -1071,7 +1122,7 @@
           "for": "30m",
           "keepFiringFor": "0s",
           "annotations": {
-            "description": "Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left.",
+            "description": "Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf \"%.2f\" $values.D.Value }}% available space left.",
             "summary": "Filesystem has less than 5% space left.",
             "upstream_alert": "NodeFilesystemAlmostOutOfSpace",
             "upstream_source": "prometheus/node_exporter node-mixin"
@@ -1149,6 +1200,23 @@
                 "refId": "C",
                 "type": "threshold"
               }
+            },
+            {
+              "refId": "D",
+              "queryType": "",
+              "relativeTimeRange": {
+                "from": 600,
+                "to": 0
+              },
+              "datasourceUid": "grafanacloud-prom",
+              "model": {
+                "expr": "100 * node_filesystem_avail_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"} / node_filesystem_size_bytes{job=~\"integrations/(node_exporter|unix)\",fstype!=\"\",mountpoint!=\"\"}",
+                "instant": true,
+                "intervalMs": 1000,
+                "legendFormat": "{{instance}}",
+                "maxDataPoints": 43200,
+                "refId": "D"
+              }
             }
           ],
           "noDataState": "OK",
@@ -1156,7 +1224,7 @@
           "for": "30m",
           "keepFiringFor": "0s",
           "annotations": {
-            "description": "Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf \"%.2f\" $value }}% available space left.",
+            "description": "Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf \"%.2f\" $values.D.Value }}% available space left.",
             "summary": "Filesystem has less than 3% space left.",
             "upstream_alert": "NodeFilesystemAlmostOutOfSpace",
             "upstream_source": "prometheus/node_exporter node-mixin"

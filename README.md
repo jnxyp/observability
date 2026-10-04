@@ -70,3 +70,44 @@ git status --short --branch
 ```
 
 Pull 完成后根据变更范围执行对应的 `docker compose up -d`、服务 reload，或将仓库中的辅助配置同步到上表所列的实际路径。`.env`、`data/` 和其他本地 secret/运行数据受 `.gitignore` 保护，不由 Git 管理。
+
+## 磁盘空间告警验证
+
+`node-fs-filling-{warning,critical}` 保留原来的空间门槛（40% / 20%）、
+预测期限（24h / 4h）和持续时间（1h），同时要求 6h 与最近 1h 的
+`predict_linear` 都预测在对应期限内耗尽。这样部署后已经稳定的单次空间阶跃
+不会仅因仍在 6h 回归窗口中而持续告警；持续增长仍被检测。最近一小时尚未形成
+稳定趋势时，预测可能波动，不应把线性外推当成准确耗尽时间。
+
+独立的 `node-fs-low-space-{warning,critical}` 继续按余量 <5% / <3%、持续 30m
+告警，不受趋势确认影响。四条空间规则均保留可写文件系统筛选、UID、标签、
+`NoData=OK` 与错误处理策略；主机失联继续由 Instance Down 负责。
+
+四条规则的查询 A 保留布尔归一化值，供 B/C 判断；新增瞬时查询 D 返回
+`100 * node_filesystem_avail_bytes / node_filesystem_size_bytes`，通知使用
+`{{ printf "%.2f" $values.D.Value }}%`。不能把 A/B/C 的 0/1 当成百分比，
+也不能直接让真实百分比经 `>0.5` 决定告警，否则剩余 0% 时反而可能不告警。
+
+测试脚本从实际 provisioning 文件读取表达式，生成 13 个场景、105 项 PromQL
+断言，包括部署阶跃、持续慢/快增长、低余量、0% 余量、阈值边界、空间恢复、
+只读文件系统、缺失数据及两种采集 job。使用已有 Prometheus 的 promtool，无需安装：
+
+```bash
+python3 tests/test_filesystem_alerts.py | docker exec -i observability-prometheus-1 promtool test rules /dev/stdin
+```
+
+2026-10-04 验证：promtool 全部通过；Grafana `/api/v1/eval` 回放 05:31:30 UTC，
+旧趋势条件为 1，新条件不匹配，D=33.482314%。使用 `/api/v1/rule/test/grafana`
+无保存预览验证四条规则的模板，显示真实 33.46%；预览临时强制条件成立以覆盖模板，
+不保存规则、不发送通知，不能当作线上已发布的证明。
+
+按上述 Git 流程发布后，使用现有服务器管理员 Basic Auth 调用
+`POST /api/admin/provisioning/alerting/reload` 热重载，无需重启 Grafana。
+已有服务账号可读取规则及执行预览，但不能调用服务器管理员 API；文件来源的规则
+不得通过更改 provenance、删除重建或直接修改数据库来规避热重载认证要求。
+发布前核对旧版本与工作树，发布后通过规则导出及运行时状态验证四条规则，
+确认其他规则未变。回滚使用修复提交的 `git revert`，push、fast-forward pull
+并再次热重载；不要直接覆盖服务器文件。
+
+参考：[Grafana annotation variables](https://grafana.com/docs/grafana/latest/alerting/alerting-rules/templates/reference/)、
+[provisioning reload API](https://grafana.com/docs/grafana/latest/developer-resources/api-reference/http-api/api-legacy/admin/#reload-provisioning-configurations)。
