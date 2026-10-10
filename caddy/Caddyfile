@@ -1,6 +1,8 @@
 {
 	email {$ACME_EMAIL}
-	metrics
+	metrics {
+		per_host
+	}
 }
 
 (compression) {

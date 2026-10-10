@@ -56,6 +56,8 @@ prometheus.scrape "caddy" {
   forward_to      = [prometheus.relabel.host.receiver]
   job_name        = "integrations/caddy"
   scrape_interval = "30s"
+  scrape_timeout = "10s"
+  extra_metrics = true
 }
 
 prometheus.relabel "host" {
