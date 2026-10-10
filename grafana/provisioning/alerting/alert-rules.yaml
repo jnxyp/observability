@@ -489,86 +489,6 @@
     },
     {
       "orgId": 1,
-      "name": "log-anomaly",
-      "folder": "Operations",
-      "interval": "1m",
-      "rules": [
-        {
-          "uid": "dfqrqn07gmxogd",
-          "title": "Container Error Log Spike",
-          "condition": "E",
-          "data": [
-            {
-              "refId": "A",
-              "queryType": "range",
-              "relativeTimeRange": {
-                "from": 900,
-                "to": 0
-              },
-              "datasourceUid": "grafanacloud-logs",
-              "model": {
-                "expr": "sum by (container, instance) (\n  count_over_time({job=~\"(integrations/)?docker\", container!~\".*xray.*|.*hysteria.*|fossicdiscuz-nginx-1|durian_minecraft-website-1|certd|durian-registry|observability-(grafana|loki)-1\"} |~ `(?i)error` [15m])\n  or count_over_time({job=~\"(integrations/)?docker\", container=\"fossicdiscuz-nginx-1\"} |~ `(?i)error` !~ `(?i)(access forbidden by rule|No such file or directory)` [15m])\n  or count_over_time({job=~\"(integrations/)?docker\", container=\"durian_minecraft-website-1\"} |~ `(?i)error` !~ `No such file or directory` [15m])\n  or count_over_time({job=~\"(integrations/)?docker\", container=\"certd\"} |~ `(?i)error` !~ `(?i)NotFoundError:.*Not Found` [15m])\n  or count_over_time({job=~\"(integrations/)?docker\", container=\"durian-registry\"} |~ `(?i)error` !~ `err.code=\"(manifest|blob) unknown\"` [15m])\n  or count_over_time({job=~\"(integrations/)?docker\", container=~\"observability-(grafana|loki)-1\"} | logfmt | level=~\"(?i)(error|fatal|panic)\" [15m])\n)",
-                "intervalMs": 1000,
-                "maxDataPoints": 43200,
-                "queryType": "range",
-                "refId": "A"
-              }
-            },
-            {
-              "refId": "B",
-              "queryType": "",
-              "relativeTimeRange": {
-                "from": 0,
-                "to": 0
-              },
-              "datasourceUid": "__expr__",
-              "model": {
-                "expression": "A",
-                "intervalMs": 1000,
-                "maxDataPoints": 43200,
-                "reducer": "last",
-                "refId": "B",
-                "settings": {
-                  "mode": "dropNN"
-                },
-                "type": "reduce"
-              }
-            },
-            {
-              "refId": "E",
-              "queryType": "",
-              "relativeTimeRange": {
-                "from": 0,
-                "to": 0
-              },
-              "datasourceUid": "__expr__",
-              "model": {
-                "expression": "$B >= 50",
-                "intervalMs": 1000,
-                "maxDataPoints": 43200,
-                "refId": "E",
-                "type": "math"
-              }
-            }
-          ],
-          "noDataState": "OK",
-          "execErrState": "Alerting",
-          "for": "2m",
-          "keepFiringFor": "5m",
-          "annotations": {
-            "description": "Container {{ $labels.container }} on {{ $labels.instance }} logged {{ $values.B }} actionable error lines in the last 15 minutes (threshold: 50). Known scanner-generated 404/403 noise and expected registry lookup misses are filtered per container. Check: {container=\"{{ $labels.container }}\", instance=\"{{ $labels.instance }}\"} |~ \"(?i)error\"",
-            "summary": "Actionable error burst in {{ $labels.container }} on {{ $labels.instance }}"
-          },
-          "labels": {
-            "severity": "warning",
-            "team": "ops"
-          },
-          "isPaused": false
-        }
-      ]
-    },
-    {
-      "orgId": 1,
       "name": "php-fpm",
       "folder": "Operations",
       "interval": "1m",
@@ -2766,6 +2686,12 @@
           "isPaused": false
         }
       ]
+    }
+  ],
+  "deleteRules": [
+    {
+      "orgId": 1,
+      "uid": "dfqrqn07gmxogd"
     }
   ]
 }
