@@ -1,6 +1,6 @@
 {
   "uid": "caddy-runtime-v2",
-  "title": "Caddy / 流量与运行状态",
+  "title": "Caddy / Traffic & Runtime",
   "tags": [
     "caddy",
     "self-hosted"
@@ -18,7 +18,7 @@
     "list": [
       {
         "name": "instance",
-        "label": "服务器",
+        "label": "Instance",
         "type": "query",
         "datasource": {
           "type": "prometheus",
@@ -49,7 +49,7 @@
     {
       "id": 1,
       "type": "row",
-      "title": "实例状态 · 按服务器汇总",
+      "title": "Instance health",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -62,7 +62,7 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "采集状态",
+      "title": "Scrape status",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -87,11 +87,11 @@
               "type": "value",
               "options": {
                 "0": {
-                  "text": "异常",
+                  "text": "Unhealthy",
                   "color": "red"
                 },
                 "1": {
-                  "text": "正常",
+                  "text": "Healthy",
                   "color": "green"
                 }
               }
@@ -116,7 +116,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "up{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "up{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -144,7 +144,7 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "最近配置加载",
+      "title": "Last configuration reload",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -169,11 +169,11 @@
               "type": "value",
               "options": {
                 "0": {
-                  "text": "异常",
+                  "text": "Unhealthy",
                   "color": "red"
                 },
                 "1": {
-                  "text": "正常",
+                  "text": "Healthy",
                   "color": "green"
                 }
               }
@@ -198,7 +198,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "caddy_config_last_reload_successful{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "caddy_config_last_reload_successful{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -226,7 +226,7 @@
     {
       "id": 4,
       "type": "stat",
-      "title": "进程运行时间",
+      "title": "Process uptime",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -252,7 +252,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "time() - process_start_time_seconds{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "time() - process_start_time_seconds{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -280,7 +280,7 @@
     {
       "id": 5,
       "type": "stat",
-      "title": "常驻内存",
+      "title": "Resident memory",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -306,7 +306,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "process_resident_memory_bytes{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "process_resident_memory_bytes{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -334,7 +334,7 @@
     {
       "id": 6,
       "type": "row",
-      "title": "业务流量 · HTTP 请求／响应体口径，非网卡账单流量",
+      "title": "Application traffic · HTTP payload sizes, not network billing totals",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -347,7 +347,7 @@
     {
       "id": 7,
       "type": "timeseries",
-      "title": "响应字节速率",
+      "title": "Response throughput",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -385,7 +385,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by(instance) (rate(caddy_http_response_size_bytes_sum{job=\"integrations/caddy\",instance=~\"${instance:regex}\",handler=\"subroute\",host!=\"\"}[$__rate_interval]))",
+          "expr": "sum by(instance) (rate(caddy_http_response_size_bytes_sum{job=\"integrations/caddy\",instance=~`${instance:regex}`,handler=\"subroute\",host!=\"\"}[$__rate_interval]))",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -414,7 +414,7 @@
     {
       "id": 8,
       "type": "timeseries",
-      "title": "请求字节速率",
+      "title": "Request throughput",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -452,7 +452,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by(instance) (rate(caddy_http_request_size_bytes_sum{job=\"integrations/caddy\",instance=~\"${instance:regex}\",handler=\"subroute\",host!=\"\"}[$__rate_interval]))",
+          "expr": "sum by(instance) (rate(caddy_http_request_size_bytes_sum{job=\"integrations/caddy\",instance=~`${instance:regex}`,handler=\"subroute\",host!=\"\"}[$__rate_interval]))",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -481,7 +481,7 @@
     {
       "id": 9,
       "type": "timeseries",
-      "title": "平均响应大小",
+      "title": "Mean response size",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -519,7 +519,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by(instance) (rate(caddy_http_response_size_bytes_sum{job=\"integrations/caddy\",instance=~\"${instance:regex}\",handler=\"subroute\",host!=\"\"}[$__rate_interval])) / sum by(instance) (rate(caddy_http_response_size_bytes_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",handler=\"subroute\",host!=\"\"}[$__rate_interval]))",
+          "expr": "sum by(instance) (rate(caddy_http_response_size_bytes_sum{job=\"integrations/caddy\",instance=~`${instance:regex}`,handler=\"subroute\",host!=\"\"}[$__rate_interval])) / sum by(instance) (rate(caddy_http_response_size_bytes_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,handler=\"subroute\",host!=\"\"}[$__rate_interval]))",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -548,7 +548,7 @@
     {
       "id": 10,
       "type": "timeseries",
-      "title": "平均请求大小",
+      "title": "Mean request size",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -586,7 +586,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by(instance) (rate(caddy_http_request_size_bytes_sum{job=\"integrations/caddy\",instance=~\"${instance:regex}\",handler=\"subroute\",host!=\"\"}[$__rate_interval])) / sum by(instance) (rate(caddy_http_request_size_bytes_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",handler=\"subroute\",host!=\"\"}[$__rate_interval]))",
+          "expr": "sum by(instance) (rate(caddy_http_request_size_bytes_sum{job=\"integrations/caddy\",instance=~`${instance:regex}`,handler=\"subroute\",host!=\"\"}[$__rate_interval])) / sum by(instance) (rate(caddy_http_request_size_bytes_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,handler=\"subroute\",host!=\"\"}[$__rate_interval]))",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -615,7 +615,7 @@
     {
       "id": 11,
       "type": "row",
-      "title": "上游与运行资源",
+      "title": "Upstreams & process resources",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -628,8 +628,8 @@
     {
       "id": 12,
       "type": "timeseries",
-      "title": "上游健康状态",
-      "description": "Caddy 所知的上游健康状态；未配置健康检查时不能代替主动探测。",
+      "title": "Upstream health",
+      "description": "Health as known to Caddy. Without configured health checks this does not replace active probing.",
       "datasource": {
         "type": "prometheus",
         "uid": "grafanacloud-prom"
@@ -665,11 +665,11 @@
               "type": "value",
               "options": {
                 "0": {
-                  "text": "异常",
+                  "text": "Unhealthy",
                   "color": "red"
                 },
                 "1": {
-                  "text": "正常",
+                  "text": "Healthy",
                   "color": "green"
                 }
               }
@@ -694,7 +694,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "caddy_reverse_proxy_upstreams_healthy{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "caddy_reverse_proxy_upstreams_healthy{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}} → {{upstream}}",
           "datasource": {
             "type": "prometheus",
@@ -723,7 +723,7 @@
     {
       "id": 13,
       "type": "timeseries",
-      "title": "CPU 使用量",
+      "title": "CPU usage",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -761,7 +761,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "rate(process_cpu_seconds_total{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}[$__rate_interval])",
+          "expr": "rate(process_cpu_seconds_total{job=\"integrations/caddy\",instance=~`${instance:regex}`}[$__rate_interval])",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -790,7 +790,7 @@
     {
       "id": 14,
       "type": "timeseries",
-      "title": "常驻内存趋势",
+      "title": "Resident memory",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -828,7 +828,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "process_resident_memory_bytes{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "process_resident_memory_bytes{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -857,7 +857,7 @@
     {
       "id": 15,
       "type": "timeseries",
-      "title": "文件描述符使用率",
+      "title": "File descriptor utilization",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -896,7 +896,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * process_open_fds{job=\"integrations/caddy\",instance=~\"${instance:regex}\"} / process_max_fds{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "100 * process_open_fds{job=\"integrations/caddy\",instance=~`${instance:regex}`} / process_max_fds{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -963,7 +963,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "go_goroutines{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "go_goroutines{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -992,8 +992,8 @@
     {
       "id": 17,
       "type": "timeseries",
-      "title": "平均 GC 暂停",
-      "description": "无 GC 事件时没有平均值。",
+      "title": "Mean GC pause",
+      "description": "No average is shown when no GC events occur.",
       "datasource": {
         "type": "prometheus",
         "uid": "grafanacloud-prom"
@@ -1030,7 +1030,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "rate(go_gc_duration_seconds_sum{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}[$__rate_interval]) / rate(go_gc_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}[$__rate_interval])",
+          "expr": "rate(go_gc_duration_seconds_sum{job=\"integrations/caddy\",instance=~`${instance:regex}`}[$__rate_interval]) / rate(go_gc_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`}[$__rate_interval])",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -1059,7 +1059,7 @@
     {
       "id": 18,
       "type": "row",
-      "title": "采集质量",
+      "title": "Scrape diagnostics",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -1072,7 +1072,7 @@
     {
       "id": 19,
       "type": "timeseries",
-      "title": "采集耗时",
+      "title": "Scrape duration",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -1110,7 +1110,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "scrape_duration_seconds{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "scrape_duration_seconds{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -1139,7 +1139,7 @@
     {
       "id": 20,
       "type": "timeseries",
-      "title": "每次采集样本数",
+      "title": "Samples per scrape",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -1177,8 +1177,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "scrape_samples_scraped{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
-          "legendFormat": "{{instance}} 原始",
+          "expr": "scrape_samples_scraped{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
+          "legendFormat": "{{instance}} scraped",
           "datasource": {
             "type": "prometheus",
             "uid": "grafanacloud-prom"
@@ -1189,8 +1189,8 @@
         },
         {
           "refId": "B",
-          "expr": "scrape_samples_post_metric_relabeling{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
-          "legendFormat": "{{instance}} 保留",
+          "expr": "scrape_samples_post_metric_relabeling{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
+          "legendFormat": "{{instance}} retained",
           "datasource": {
             "type": "prometheus",
             "uid": "grafanacloud-prom"
@@ -1218,7 +1218,7 @@
     {
       "id": 21,
       "type": "timeseries",
-      "title": "指标响应大小",
+      "title": "Metrics response size",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -1256,7 +1256,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "scrape_body_size_bytes{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "scrape_body_size_bytes{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -1285,7 +1285,7 @@
     {
       "id": 22,
       "type": "timeseries",
-      "title": "距最近成功配置加载",
+      "title": "Time since last successful reload",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -1323,7 +1323,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "time() - caddy_config_last_reload_success_timestamp_seconds{job=\"integrations/caddy\",instance=~\"${instance:regex}\"}",
+          "expr": "time() - caddy_config_last_reload_success_timestamp_seconds{job=\"integrations/caddy\",instance=~`${instance:regex}`}",
           "legendFormat": "{{instance}}",
           "datasource": {
             "type": "prometheus",
@@ -1352,14 +1352,14 @@
   ],
   "links": [
     {
-      "title": "请求与延迟",
+      "title": "Requests & Latency",
       "type": "link",
       "url": "/d/caddy-requests-v2",
       "keepTime": true,
       "includeVars": true
     },
     {
-      "title": "流量与运行状态",
+      "title": "Traffic & Runtime",
       "type": "link",
       "url": "/d/caddy-runtime-v2",
       "keepTime": true,

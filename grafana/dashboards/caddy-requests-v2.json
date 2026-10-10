@@ -1,6 +1,6 @@
 {
   "uid": "caddy-requests-v2",
-  "title": "Caddy / 请求与延迟",
+  "title": "Caddy / Requests & Latency",
   "tags": [
     "caddy",
     "self-hosted"
@@ -18,7 +18,7 @@
     "list": [
       {
         "name": "instance",
-        "label": "服务器",
+        "label": "Instance",
         "type": "query",
         "datasource": {
           "type": "prometheus",
@@ -42,17 +42,17 @@
       },
       {
         "name": "host",
-        "label": "域名",
+        "label": "Host",
         "type": "query",
         "datasource": {
           "type": "prometheus",
           "uid": "grafanacloud-prom"
         },
         "query": {
-          "query": "label_values(caddy_http_requests_total{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host!=\"\"}, host)",
+          "query": "label_values(caddy_http_requests_total{job=\"integrations/caddy\",instance=~`${instance:regex}`,host!=\"\"}, host)",
           "refId": "host"
         },
-        "definition": "label_values(caddy_http_requests_total{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host!=\"\"}, host)",
+        "definition": "label_values(caddy_http_requests_total{job=\"integrations/caddy\",instance=~`${instance:regex}`,host!=\"\"}, host)",
         "refresh": 2,
         "sort": 1,
         "multi": true,
@@ -66,17 +66,17 @@
       },
       {
         "name": "handler",
-        "label": "路由类型",
+        "label": "Route type",
         "type": "query",
         "datasource": {
           "type": "prometheus",
           "uid": "grafanacloud-prom"
         },
         "query": {
-          "query": "label_values(caddy_http_requests_total{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\"}, handler)",
+          "query": "label_values(caddy_http_requests_total{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`}, handler)",
           "refId": "handler"
         },
-        "definition": "label_values(caddy_http_requests_total{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\"}, handler)",
+        "definition": "label_values(caddy_http_requests_total{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`}, handler)",
         "refresh": 2,
         "sort": 1,
         "multi": true,
@@ -97,7 +97,7 @@
     {
       "id": 1,
       "type": "row",
-      "title": "请求概览 · 默认统计业务路由；可切换路由类型查看重定向",
+      "title": "Request overview · application routes selected by default",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -110,7 +110,7 @@
     {
       "id": 2,
       "type": "stat",
-      "title": "当前请求速率",
+      "title": "Current request rate",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -136,7 +136,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval]))",
+          "expr": "sum(rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval]))",
           "legendFormat": "QPS",
           "datasource": {
             "type": "prometheus",
@@ -164,8 +164,8 @@
     {
       "id": 3,
       "type": "stat",
-      "title": "所选时段请求数",
-      "description": "按计数器增量估算；新增域名标签之前的数据不纳入此视图。",
+      "title": "Requests in selected range",
+      "description": "Estimated counter increase over the selected range. Per-host data starts at rollout; earlier samples are excluded.",
       "datasource": {
         "type": "prometheus",
         "uid": "grafanacloud-prom"
@@ -190,8 +190,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(increase(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__range]))",
-          "legendFormat": "请求数",
+          "expr": "sum(increase(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__range]))",
+          "legendFormat": "Requests",
           "datasource": {
             "type": "prometheus",
             "uid": "grafanacloud-prom"
@@ -218,8 +218,8 @@
     {
       "id": 4,
       "type": "stat",
-      "title": "当前 5xx 比例",
-      "description": "无请求时不显示比例。Caddy 内部处理错误与 HTTP 5xx 是不同口径。",
+      "title": "Current 5xx ratio",
+      "description": "No ratio is shown without traffic. HTTP 5xx responses differ from internal Caddy handling errors.",
       "datasource": {
         "type": "prometheus",
         "uid": "grafanacloud-prom"
@@ -245,7 +245,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (sum(rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\",code=~\"5..\"}[$__rate_interval])) or (0 * sum(rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])))) / (sum(rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])))",
+          "expr": "100 * (sum(rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`,code=~\"5..\"}[$__rate_interval])) or (0 * sum(rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])))) / (sum(rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])))",
           "legendFormat": "5xx",
           "datasource": {
             "type": "prometheus",
@@ -273,7 +273,7 @@
     {
       "id": 5,
       "type": "stat",
-      "title": "正在处理的请求",
+      "title": "Requests in flight",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -299,8 +299,8 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(caddy_http_requests_in_flight{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"})",
-          "legendFormat": "并发",
+          "expr": "sum(caddy_http_requests_in_flight{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`})",
+          "legendFormat": "In flight",
           "datasource": {
             "type": "prometheus",
             "uid": "grafanacloud-prom"
@@ -327,7 +327,7 @@
     {
       "id": 6,
       "type": "row",
-      "title": "请求分布",
+      "title": "Request distribution",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -340,7 +340,7 @@
     {
       "id": 7,
       "type": "timeseries",
-      "title": "各站点 QPS",
+      "title": "Request rate by host",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -378,7 +378,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (instance,host) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval]))",
+          "expr": "sum by (instance,host) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval]))",
           "legendFormat": "{{instance}} {{host}}",
           "datasource": {
             "type": "prometheus",
@@ -407,7 +407,7 @@
     {
       "id": 8,
       "type": "timeseries",
-      "title": "QPS by response code · 堆叠",
+      "title": "QPS by response code · stacked",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -445,7 +445,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (code) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval]))",
+          "expr": "sum by (code) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval]))",
           "legendFormat": "{{code}}",
           "datasource": {
             "type": "prometheus",
@@ -474,8 +474,8 @@
     {
       "id": 9,
       "type": "timeseries",
-      "title": "Requests by response code · 百分比",
-      "description": "各状态码请求速率除以全部请求速率；有流量时合计 100%。",
+      "title": "Requests by response code · percentage",
+      "description": "Each status code rate divided by the total request rate. Shares sum to 100% when traffic is present.",
       "datasource": {
         "type": "prometheus",
         "uid": "grafanacloud-prom"
@@ -513,7 +513,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * sum by (code) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])) / ignoring(code) group_left() (sum(rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])))",
+          "expr": "100 * sum by (code) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])) / ignoring(code) group_left() (sum(rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])))",
           "legendFormat": "{{code}}",
           "datasource": {
             "type": "prometheus",
@@ -542,7 +542,7 @@
     {
       "id": 10,
       "type": "timeseries",
-      "title": "请求方法",
+      "title": "Request methods",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -580,7 +580,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (method) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval]))",
+          "expr": "sum by (method) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval]))",
           "legendFormat": "{{method}}",
           "datasource": {
             "type": "prometheus",
@@ -609,7 +609,7 @@
     {
       "id": 11,
       "type": "row",
-      "title": "耗时 · 已完成请求；长连接会影响完整请求耗时",
+      "title": "Latency · completed requests; long-lived connections affect total duration",
       "collapsed": false,
       "panels": [],
       "gridPos": {
@@ -622,7 +622,7 @@
     {
       "id": 12,
       "type": "timeseries",
-      "title": "整体延迟分位数",
+      "title": "Overall latency percentiles",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -660,7 +660,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.5, sum by (le) (rate(caddy_http_request_duration_seconds_bucket{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.5, sum by (le) (rate(caddy_http_request_duration_seconds_bucket{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])))",
           "legendFormat": "P50",
           "datasource": {
             "type": "prometheus",
@@ -672,7 +672,7 @@
         },
         {
           "refId": "B",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(caddy_http_request_duration_seconds_bucket{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(caddy_http_request_duration_seconds_bucket{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])))",
           "legendFormat": "P95",
           "datasource": {
             "type": "prometheus",
@@ -684,7 +684,7 @@
         },
         {
           "refId": "C",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(caddy_http_request_duration_seconds_bucket{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(caddy_http_request_duration_seconds_bucket{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])))",
           "legendFormat": "P99",
           "datasource": {
             "type": "prometheus",
@@ -713,7 +713,7 @@
     {
       "id": 13,
       "type": "timeseries",
-      "title": "各站点 P95 请求耗时",
+      "title": "P95 request duration by host",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -751,7 +751,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.95, sum by (le,instance,host) (rate(caddy_http_request_duration_seconds_bucket{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.95, sum by (le,instance,host) (rate(caddy_http_request_duration_seconds_bucket{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])))",
           "legendFormat": "{{instance}} {{host}}",
           "datasource": {
             "type": "prometheus",
@@ -780,7 +780,7 @@
     {
       "id": 14,
       "type": "timeseries",
-      "title": "各站点平均请求耗时",
+      "title": "Mean request duration by host",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -818,7 +818,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (instance,host) (rate(caddy_http_request_duration_seconds_sum{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])) / sum by (instance,host) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval]))",
+          "expr": "sum by (instance,host) (rate(caddy_http_request_duration_seconds_sum{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])) / sum by (instance,host) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval]))",
           "legendFormat": "{{instance}} {{host}}",
           "datasource": {
             "type": "prometheus",
@@ -847,8 +847,8 @@
     {
       "id": 15,
       "type": "timeseries",
-      "title": "各站点 P95 首字节时间",
-      "description": "Caddy 开始处理至写出响应头，不等同于上游专用耗时。",
+      "title": "P95 time to first byte by host",
+      "description": "Time from Caddy handling the request to writing response headers; not an upstream-only measurement.",
       "datasource": {
         "type": "prometheus",
         "uid": "grafanacloud-prom"
@@ -885,7 +885,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.95, sum by (le,instance,host) (rate(caddy_http_response_duration_seconds_bucket{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])))",
+          "expr": "histogram_quantile(0.95, sum by (le,instance,host) (rate(caddy_http_response_duration_seconds_bucket{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])))",
           "legendFormat": "{{instance}} {{host}}",
           "datasource": {
             "type": "prometheus",
@@ -914,7 +914,7 @@
     {
       "id": 16,
       "type": "timeseries",
-      "title": "各站点 5xx QPS",
+      "title": "5xx rate by host",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -952,7 +952,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by(instance,host) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\",code=~\"5..\"}[$__rate_interval])) or (0 * sum by (instance,host) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"}[$__rate_interval])))",
+          "expr": "sum by(instance,host) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`,code=~\"5..\"}[$__rate_interval])) or (0 * sum by (instance,host) (rate(caddy_http_request_duration_seconds_count{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`}[$__rate_interval])))",
           "legendFormat": "{{instance}} {{host}}",
           "datasource": {
             "type": "prometheus",
@@ -981,7 +981,7 @@
     {
       "id": 17,
       "type": "timeseries",
-      "title": "各站点并发请求",
+      "title": "Requests in flight by host",
       "description": "",
       "datasource": {
         "type": "prometheus",
@@ -1019,7 +1019,7 @@
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by(instance,host) (caddy_http_requests_in_flight{job=\"integrations/caddy\",instance=~\"${instance:regex}\",host=~\"${host:regex}\",handler=~\"${handler:regex}\"})",
+          "expr": "sum by(instance,host) (caddy_http_requests_in_flight{job=\"integrations/caddy\",instance=~`${instance:regex}`,host=~`${host:regex}`,handler=~`${handler:regex}`})",
           "legendFormat": "{{instance}} {{host}}",
           "datasource": {
             "type": "prometheus",
@@ -1048,14 +1048,14 @@
   ],
   "links": [
     {
-      "title": "请求与延迟",
+      "title": "Requests & Latency",
       "type": "link",
       "url": "/d/caddy-requests-v2",
       "keepTime": true,
       "includeVars": true
     },
     {
-      "title": "流量与运行状态",
+      "title": "Traffic & Runtime",
       "type": "link",
       "url": "/d/caddy-runtime-v2",
       "keepTime": true,
