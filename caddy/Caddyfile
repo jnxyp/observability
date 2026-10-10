@@ -28,6 +28,7 @@
 		cn-sh-nn {$INGEST_HASH_CN_SH_NN}
 		cn-sz-nn {$INGEST_HASH_CN_SZ_NN}
 		us-sv-docker {$INGEST_HASH_US_SV_DOCKER}
+		us-sv-nn {$INGEST_HASH_US_SV_NN}
 		us-va-docker {$INGEST_HASH_US_VA_DOCKER}
 		cn-hk-fossic {$INGEST_HASH_CN_HK_FOSSIC}
 	}
