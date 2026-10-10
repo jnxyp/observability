@@ -334,7 +334,7 @@
     {
       "id": 6,
       "type": "row",
-      "title": "Application traffic · HTTP payload sizes, not network billing totals",
+      "title": "Application traffic · HTTP size estimates, not network billing totals",
       "collapsed": false,
       "panels": [],
       "gridPos": {

@@ -117,7 +117,7 @@ d.group([('Scrape status',raw('up'),'short',{'type':'stat','health':True,'legend
          ('Last configuration reload',raw('caddy_config_last_reload_successful'),'short',{'type':'stat','health':True,'legend':'{{instance}}'}),
          ('Process uptime','time() - '+raw('process_start_time_seconds'),'s',{'type':'stat','legend':'{{instance}}'}),
          ('Resident memory',raw('process_resident_memory_bytes'),'bytes',{'type':'stat','legend':'{{instance}}'})],4)
-d.row('Application traffic · HTTP payload sizes, not network billing totals')
+d.row('Application traffic · HTTP size estimates, not network billing totals')
 d.group([('Response throughput',body_rate('caddy_http_response_size_bytes_sum'),'Bps',{'legend':'{{instance}}'}),
          ('Request throughput',body_rate('caddy_http_request_size_bytes_sum'),'Bps',{'legend':'{{instance}}'})])
 d.group([('Mean response size',body_rate('caddy_http_response_size_bytes_sum')+' / '+body_count('caddy_http_response_size_bytes_count'),'bytes',{'legend':'{{instance}}'}),
