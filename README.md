@@ -111,3 +111,9 @@ python3 tests/test_filesystem_alerts.py | docker exec -i observability-prometheu
 
 参考：[Grafana annotation variables](https://grafana.com/docs/grafana/latest/alerting/alerting-rules/templates/reference/)、
 [provisioning reload API](https://grafana.com/docs/grafana/latest/developer-resources/api-reference/http-api/api-legacy/admin/#reload-provisioning-configurations)。
+
+## Restic 静默漏备检测
+
+`Restic Backup Missing` 使用 11 台预期备份节点的固定 instance 集合，与最近 25h 的 `Backup complete` 集合相减，并保留有日志的新节点自动纳入检测。即使 cron 未启动、重定向失败、日志文件不再写入或 Alloy 不再发送该文件，预期节点也不会从结果中消失。新增、停用或重命名备份节点时必须同步调整该规则的 `label_replace(vector(1), ...)` 清单。NoData=OK、查询错误=Alerting、for=5m 保持不变。
+
+2026-10-17（美国太平洋时间）用线上 Loki 回放 2026-10-18 05:59 UTC：新查询仅返回 `ca-to-home.jnxyp.local`，旧查询为空；修复备份后新查询为空。使用无任何日志的虚拟 instance 验证缺失结果为 1。集合操作依据 [LogQL reference](https://grafana.com/docs/loki/latest/query/query_reference/)。

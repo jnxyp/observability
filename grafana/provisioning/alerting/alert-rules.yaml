@@ -587,7 +587,7 @@
               },
               "datasourceUid": "grafanacloud-logs",
               "model": {
-                "expr": "sum by (instance) (count_over_time({job=\"restic-backup\"}[25h])) unless sum by (instance) (count_over_time({job=\"restic-backup\"} |= \"Backup complete\" [25h]))",
+                "expr": "(label_replace(vector(1), \"instance\", \"ca-to-home.jnxyp.local\", \"\", \"\") or label_replace(vector(1), \"instance\", \"cn-hk-docker.jnxyp.net\", \"\", \"\") or label_replace(vector(1), \"instance\", \"cn-hk-fossic.jnxyp.net\", \"\", \"\") or label_replace(vector(1), \"instance\", \"cn-hk-grafana.jnxyp.net\", \"\", \"\") or label_replace(vector(1), \"instance\", \"cn-hk-nn-2.jnxyp.net\", \"\", \"\") or label_replace(vector(1), \"instance\", \"cn-hk-nn.jnxyp.net\", \"\", \"\") or label_replace(vector(1), \"instance\", \"cn-sh-nn.jnxyp.cn\", \"\", \"\") or label_replace(vector(1), \"instance\", \"cn-sz-nn.jnxyp.cn\", \"\", \"\") or label_replace(vector(1), \"instance\", \"us-sv-docker.jnxyp.net\", \"\", \"\") or label_replace(vector(1), \"instance\", \"us-sv-nn.jnxyp.net\", \"\", \"\") or label_replace(vector(1), \"instance\", \"us-va-docker.jnxyp.net\", \"\", \"\") or sum by (instance) (count_over_time({job=\"restic-backup\"}[25h]))) unless sum by (instance) (count_over_time({job=\"restic-backup\"} |= \"Backup complete\" [25h]))",
                 "intervalMs": 1000,
                 "legendFormat": "{{instance}}",
                 "maxDataPoints": 43200,
@@ -647,7 +647,7 @@
           "for": "5m",
           "keepFiringFor": "0s",
           "annotations": {
-            "description": "{{ $labels.instance }} wrote to /var/log/restic/backup.log in the last 25h but never logged 'Backup complete'. The backup is failing or hanging. Check: {job=\"restic-backup\", instance=\"{{ $labels.instance }}\"}. If restic has been running far longer than a minute it is almost certainly stuck retrying uploads — kill it, run 'restic unlock', then re-run backup.sh.",
+            "description": "{{ $labels.instance }} has no 'Backup complete' log in the last 25h. Expected backup hosts are checked even when cron never starts or no logs are written. Check cron scheduling and line endings, script execution, repository snapshots, and Alloy log delivery: {job=\"restic-backup\", instance=\"{{ $labels.instance }}\"}.",
             "summary": "No backup completed on {{ $labels.instance }} in the last 25h"
           },
           "labels": {
